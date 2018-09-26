@@ -33,7 +33,7 @@ exports.addPostAsync = async function(contents, meta) {
 
             const joiSchema = Joi.object().keys({
                 contents: Joi.string().alphanum().min(15).required()
-            }).with("contents");
+            });
             
             const joiResult = Joi.validate({contents: contents}, schema);
             if(joiResult.error !== null) { return { error: joiResult.error }; }
