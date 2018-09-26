@@ -29,7 +29,7 @@ function toggleContent() {
 }
 
 function elementsByClassName(className) {
-    if(className === undefined || className === null ||typeof className !== "string") { throw "'className' must be a string!"; }
+    if(className === undefined || className === null || typeof className !== "string") { throw "'className' must be a string!"; }
     
     var returnArray = [];
     var elements = document.getElementsByClassName(className);
