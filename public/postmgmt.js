@@ -19,7 +19,7 @@ function documentLoaded() {
             document.getElementById("posts").innerHTML = "<h1>Invalid response received from server!</h1>";
             return;
         }
-        
+
         var element = document.getElementById("posts");
         for(var i = 0; i < response.posts.length; i++) {
             var post = response.posts[i];
@@ -64,7 +64,7 @@ function post() {
 }
 
 function formatDate(date) {
-    if(typeof date !== "Date") { throw "Input must be a valid Date!"; }
+    if(Object.prototype.toString.call(date) === "[object Date]") { throw "Input must be a valid Date!"; }
     return date.getFullYear() + "-" + formatNumber(date.getMonth() + 1) + "-" + formatNumber(date.getDate()) + "  " + 
             formatNumber(date.getHours()) + ":" + formatNumber(date.getMinutes()) + ":" + formatNumber(date.getSeconds());
 }
