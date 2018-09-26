@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Single Page MySQL</title>
+        <link rel="stylesheet" href="style.css">
+        <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="client.js"></script>
+        <script type="text/javascript" src="fetchPosts.js"></script>
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <div id="logga"><h1>Single Page Mysql</h1></div>
+                <div id="menuButton"><h1>&equiv;</h1></div>
+            </div>
+            <nav class="hidden">
+                <ul>
+                    <li class="menu" >home</li>
+                    <li class="menu">todo</li>
+                    <li class="menu">faq</li>
+                    <li class="menu">chat</li>               
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="mainContent">
+                <p>Hej och välkommen till min första single page sida.
+                    Här skall jag lära mig göra en todo med hjälp av Node och MySQL.
+                </p>
+            </div>
+            <div class="mainContent visible">
+                <form action="/createPost" method="post">
+                    <textarea name="todo" placeholder="what to do?"></textarea>
+                    <input type="submit" value="save">
+                </form>
+                <div id="posts"></div>
+            </div>
+            <div class="mainContent">3</div>
+            <div class="mainContent">4</div>
+        </main>
+        <footer>
+            <h3>Copyright &copy; Someone 2018</h3>
+        </footer>
+    </body>
+</html>
