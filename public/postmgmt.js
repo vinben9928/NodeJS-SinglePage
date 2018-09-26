@@ -64,7 +64,7 @@ function post() {
 }
 
 function formatDate(date) {
-    if(Object.prototype.toString.call(date) === "[object Date]") { throw "Input must be a valid Date!"; }
+    if(Object.prototype.toString.call(date) !== "[object Date]") { throw "Input must be a valid Date!"; }
     return date.getFullYear() + "-" + formatNumber(date.getMonth() + 1) + "-" + formatNumber(date.getDate()) + "  " + 
             formatNumber(date.getHours()) + ":" + formatNumber(date.getMinutes()) + ":" + formatNumber(date.getSeconds());
 }
