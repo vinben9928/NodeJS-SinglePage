@@ -73,16 +73,11 @@ main
     display: none;
 }
 
-.mainContent textarea, .mainContent button
+#postData, #postButton
 {
     width: 100%;
     font-size: 1.4em;
     padding: 1%;
-}
-
-.posts
-{
-
 }
 
 .post
