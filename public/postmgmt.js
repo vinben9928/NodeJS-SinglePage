@@ -45,7 +45,7 @@ function documentLoaded() {
                 
                 var tagsString = "";
                 for(var t = 0; t < post.meta.tags.length; t++) {
-                    tagsString += post.meta.tags[t] + (t < post.met.tags.length - 1 ? " | " : "");
+                    tagsString += post.meta.tags[t] + (t < post.meta.tags.length - 1 ? " | " : "");
                 }
 
                 var tagsElement = document.createElement("p");
