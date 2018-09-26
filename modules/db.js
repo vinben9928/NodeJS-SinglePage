@@ -87,7 +87,7 @@ exports.getPostsAsync = async function() {
     if(connection !== null) {
         try {
             var rows = await new Promise((resolve, reject) => {
-                connection.query("SELECT * FROM posts", data, function(error, results, fields) {
+                connection.query("SELECT * FROM posts", function(error, results, fields) {
                     if(error) { reject(error); return; }
                     resolve(results);
                 });
@@ -101,14 +101,14 @@ exports.getPostsAsync = async function() {
                 }
                 catch(error) { console.log(error); }
             }
-            
+
             connection.end(function(error) {});
             return { data: data };
         }
         catch(error) {
             connection.end(function(error) {});
             console.log(error);
-            return { error: "Failed to add post!" };
+            return { error: "Failed to get posts!" };
         }
     }
     else {
