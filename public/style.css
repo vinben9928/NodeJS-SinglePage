@@ -73,7 +73,7 @@ main
     display: none;
 }
 
-.mainContent textarea, .mainContent input
+.mainContent textarea, .mainContent button
 {
     width: 100%;
     font-size: 1.4em;

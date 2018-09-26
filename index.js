@@ -6,9 +6,9 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 app.post("/create", async function(request, response) {
-    if(request.post !== undefined && request.post !== null) {
-        var result = await db.addPostAsync(request.post, request.meta);
-        
+    if(request.body.post !== undefined && request.body.post !== null) {
+        var result = await db.addPostAsync(request.body.post, request.body.meta);
+
         if(result.error !== undefined && result.error !== null) {
             response.send(JSON.stringify({ error: result.error }));
         }

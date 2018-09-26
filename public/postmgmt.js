@@ -39,7 +39,7 @@ function documentLoaded() {
 }
 
 function post() {
-    $.post("/create", function(data) {
+    $.post("/create", { post: $("#postData").val() }, function(data) {
         try {
             var response = JSON.parse(data);
             if(response === null) { throw "<error>"; }
