@@ -32,8 +32,8 @@ function documentLoaded() {
             dateElement.innerText = formatDate(timestamp);
 
             var textElement = document.createElement("p");
-            textElement.innerText = post.data;
-
+            textElement.innerHTML = post.data;
+            
             postElement.appendChild(dateElement);
             postElement.appendChild(textElement);
 
