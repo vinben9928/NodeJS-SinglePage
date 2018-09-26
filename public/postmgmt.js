@@ -4,7 +4,14 @@ function documentLoaded() {
     $.post("/getPosts", function(data) {
         try {
             var response = JSON.parse(data);
-            if(response === null || response.posts === null || !Array.isArray(response.posts)) { throw "<error>"; }
+            if(response === null) { throw "<error>"; }
+            
+            if(response.error !== undefined && response.error !== null) {
+                alert(response.error.toString());
+                throw "<error>";
+            }
+
+            if(response.posts === null || !Array.isArray(response.posts)) { throw "<error>"; }
 
             var element = document.getElementById("posts");
             for(var i = 0; i < response.posts.length; i++) {
@@ -29,4 +36,25 @@ function documentLoaded() {
             document.getElementById("posts").innerHTML = "<h1>Invalid response received from server!</h1>";
         }
     });
+}
+
+function post() {
+    $.post("/create", function(data) {
+        try {
+            var response = JSON.parse(data);
+            if(response === null) { throw "<error>"; }
+            
+            if(response.error !== undefined && response.error !== null) {
+                alert(response.error.toString());
+                return;
+            }
+            
+            if(response.success !== undefined && response.success === true) {
+                window.location.reload(true);
+            }
+        }
+        catch(error) {
+            alert("Invalid response received from server!");
+        }
+    })
 }
