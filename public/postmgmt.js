@@ -39,13 +39,13 @@ function documentLoaded() {
             postElement.appendChild(dateElement);
             postElement.appendChild(textElement);
 
-            if(response.meta !== undefined && response.meta !== null && 
-                response.meta.tags !== undefined && response.meta.tags !== null && 
-                 Array.isArray(response.meta.tags)) {
+            if(post.meta !== undefined && post.meta !== null && 
+                post.meta.tags !== undefined && post.meta.tags !== null && 
+                 Array.isArray(post.meta.tags)) {
                 
                 var tagsString = "";
-                for(var t = 0; t < response.meta.tags.length; t++) {
-                    tagsString += response.meta.tags[t] + (t < response.met.tags.length - 1 ? " | " : "");
+                for(var t = 0; t < post.meta.tags.length; t++) {
+                    tagsString += post.meta.tags[t] + (t < post.met.tags.length - 1 ? " | " : "");
                 }
 
                 var tagsElement = document.createElement("p");
