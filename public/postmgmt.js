@@ -45,7 +45,13 @@ function documentLoaded() {
 }
 
 function post() {
-    $.post("/create", { post: $("#postData").val() }, function(data) {
+    var tags = [];
+    var tagElements = document.getElementsByClassName("postTag");
+    for(var i = 0; i < tagElements.length; i++) {
+        tags.push($(tagElements[i]).val());
+    }
+    
+    $.post("/create", { post: $("#postData").val(), meta: { tags: tags } }, function(data) {
         try {
             var response = JSON.parse(data);
             if(response === null) { throw "<error>"; }
@@ -62,7 +68,13 @@ function post() {
         catch(error) {
             alert("Invalid response received from server!");
         }
-    })
+    });
+}
+
+function addTag() {
+    var tagElement = document.createElement("textarea");
+    tagElement.className = "postTag";
+    document.getElementById("tagContainer").appendChild(tagElement);
 }
 
 function formatDate(date) {
