@@ -18,10 +18,10 @@
             </div>
             <nav class="hidden">
                 <ul>
-                    <li class="menu" >home</li>
-                    <li class="menu">todo</li>
-                    <li class="menu">faq</li>
-                    <li class="menu">chat</li>               
+                    <li class="menu">Home</li>
+                    <li class="menu">Todo</li>
+                    <li class="menu">FAQ</li>
+                    <li class="menu">Chat</li>               
                 </ul>
             </nav>
         </header>
@@ -33,9 +33,9 @@
                 </p>
             </div>
             <div class="mainContent visible">
-                <form action="/createPost" method="post">
-                    <textarea name="todo" placeholder="what to do?"></textarea>
-                    <input type="submit" value="save">
+                <form action="/create" method="post">
+                    <textarea name="post" placeholder="Enter at least 15 characters..."></textarea>
+                    <input type="Submit" value="save">
                 </form>
                 <div id="posts"></div>
             </div>
