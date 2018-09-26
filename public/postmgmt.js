@@ -67,7 +67,7 @@ function post() {
         tags.push($(tagElements[i]).val());
     }
 
-    $.post("/create", { post: $("#postData").val(), meta: JSON.stringify({ tags: tags }) }, function(data) {
+    $.post("/create", { post: $("#postData").val(), meta: { tags: tags } }, function(data) {
         try {
             var response = JSON.parse(data);
             if(response === null) { throw "<error>"; }
