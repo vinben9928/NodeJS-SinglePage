@@ -16,7 +16,6 @@ exports.connectAsync = async function() {
             });
         });
 
-        connection.end(function(error) {});
         return connection;
     }
     catch(error) {
@@ -83,9 +82,10 @@ exports.addPostAsync = async function(contents, meta) {
 };
 
 exports.getPostsAsync = async function() {
-    var connection = await exports.connectAsync();
-    if(connection !== null) {
-        try {
+    var connection = null;
+    try {
+        connection = await exports.connectAsync();
+        if(connection !== null) {
             var rows = await new Promise((resolve, reject) => {
                 connection.query("SELECT * FROM posts", function(error, results, fields) {
                     if(error) { reject(error); return; }
@@ -105,13 +105,13 @@ exports.getPostsAsync = async function() {
             connection.end(function(error) {});
             return { data: data };
         }
-        catch(error) {
-            connection.end(function(error) {});
-            console.log(error);
-            return { error: "Failed to get posts!" };
+        else {
+            return { error: "Couldn't connect to database!" };
         }
     }
-    else {
-        return { error: "Couldn't connect to database!" };
+    catch(error) {
+        if(connection !== null) { connection.end(function(error) {}); }
+        console.log(error);
+        return { error: "Failed to get posts!" };
     }
 };
