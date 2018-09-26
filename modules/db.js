@@ -16,11 +16,11 @@ exports.connectAsync = async function() {
             });
         });
 
-        connection.end();
+        connection.end(function(error) {});
         return connection;
     }
     catch(error) {
-        if(connection !== null) { connection.end(); }
+        if(connection !== null) { connection.end(function(error) {}); }
         console.log(error);
         return null;
     }
@@ -48,7 +48,7 @@ exports.addPostAsync = async function(contents, meta) {
                     data.push(JSON.stringify(JSON.parse(meta)));
                 }
                 catch(error) {
-                    connection.end();
+                    connection.end(function(error) {});
                     console.log(error);
                     return { error: "'meta' must be a valid JSON object!" };
                 }
@@ -65,18 +65,18 @@ exports.addPostAsync = async function(contents, meta) {
                 return { success: true };
             }
             catch(error) {
-                connection.end();
+                connection.end(function(error) {});
                 console.log(error);
                 return { error: "Failed to add post!" };
             }
         }
         else {
-            connection.end();
+            connection.end(function(error) {});
             return { error: "Couldn't connect to database!" };
         }
     }
     catch(error) {
-        if(connection !== null) { connection.end(); }
+        if(connection !== null) { connection.end(function(error) {}); }
         console.log(error);
         return { error: "An unknown error occurred!" };
     }
@@ -101,12 +101,12 @@ exports.getPostsAsync = async function() {
                 }
                 catch(error) { console.log(error); }
             }
-
-            connection.end();
+            
+            connection.end(function(error) {});
             return { data: data };
         }
         catch(error) {
-            connection.end();
+            connection.end(function(error) {});
             console.log(error);
             return { error: "Failed to add post!" };
         }
