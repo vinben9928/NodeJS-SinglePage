@@ -20,6 +20,8 @@ function documentLoaded() {
             return;
         }
 
+        response.posts.reverse();
+
         var element = document.getElementById("posts");
         for(var i = 0; i < response.posts.length; i++) {
             var post = response.posts[i];
@@ -33,7 +35,7 @@ function documentLoaded() {
 
             var textElement = document.createElement("p");
             textElement.innerHTML = post.data;
-            
+
             postElement.appendChild(dateElement);
             postElement.appendChild(textElement);
 
