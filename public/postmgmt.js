@@ -39,6 +39,21 @@ function documentLoaded() {
             postElement.appendChild(dateElement);
             postElement.appendChild(textElement);
 
+            if(response.meta !== undefined && response.meta !== null && 
+                response.meta.tags !== undefined && response.meta.tags !== null && 
+                 Array.isArray(response.meta.tags)) {
+                
+                var tagsString = "";
+                for(var t = 0; t < response.meta.tags.length; t++) {
+                    tagsString += response.meta.tags[t] + (t < response.met.tags.length - 1 ? " | " : "");
+                }
+
+                var tagsElement = document.createElement("p");
+                tagsElement.innerText = tagsString;
+
+                postElement.appendChild(tagsElement);
+            }
+
             element.appendChild(postElement);
         }
     });
@@ -50,8 +65,8 @@ function post() {
     for(var i = 0; i < tagElements.length; i++) {
         tags.push($(tagElements[i]).val());
     }
-    
-    $.post("/create", { post: $("#postData").val(), meta: { tags: tags } }, function(data) {
+
+    $.post("/create", { post: $("#postData").val(), meta: JSON.stringify({ tags: tags }) }, function(data) {
         try {
             var response = JSON.parse(data);
             if(response === null) { throw "<error>"; }
@@ -72,7 +87,7 @@ function post() {
 }
 
 function addTag() {
-    var tagElement = document.createElement("textarea");
+    var tagElement = document.createElement("input");
     tagElement.className = "postTag";
     document.getElementById("tagContainer").appendChild(tagElement);
 }

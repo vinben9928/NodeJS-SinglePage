@@ -44,7 +44,7 @@ exports.addPostAsync = async function(contents, meta) {
             var data = [escapeHtml(contents)];
             if(meta !== undefined && meta !== null) {
                 try {
-                    data.push(JSON.stringify(JSON.parse(meta)));
+                    data.push(JSON.stringify(meta));
                 }
                 catch(error) {
                     connection.end(function(error) {});
