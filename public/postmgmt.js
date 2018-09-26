@@ -49,6 +49,7 @@ function documentLoaded() {
                 }
 
                 var tagsElement = document.createElement("p");
+                tagsElement.className = "tagsDisplay";
                 tagsElement.innerText = tagsString;
 
                 postElement.appendChild(tagsElement);

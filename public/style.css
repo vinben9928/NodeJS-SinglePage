@@ -92,6 +92,11 @@ main
     margin-right: 8px;
 }
 
+.tagsDisplay
+{
+    font-weight: bold;
+}
+
 #addTagButton
 {
     width: 75px;
