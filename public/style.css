@@ -83,7 +83,7 @@ main
 .post
 {
     padding: 1%;
-    border-bottom: 2px dotted #AAAAAA;
+    border-bottom: 1.5px dashed #AAAAAA;
 }
 
 .postTag
