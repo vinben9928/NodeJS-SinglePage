@@ -37,16 +37,20 @@ function documentLoaded() {
             textElement.innerHTML = post.data;
 
             var deleteElement = document.createElement("div");
-            deleteElement.className = "deleteButton";
-            
+            deleteElement.classList.add("deleteButton");
+            deleteElement.classList.add("noselect");
+            deleteElement.innerHTML = "&times;";
+
+            const id = post.id;
+
             deleteElement.addEventListener("click", function() {
-                $.post("/delete", { id: post.id }, function(data) {
+                $.post("/delete", { id: id }, function(data) {
                     try {
                         var response = JSON.parse(data);
                         if(response.error !== undefined && response.error !== null) {
                             alert(response.error);
                         }
-                        
+
                         if(response.success !== undefined && response.success === true) {
                             window.location.reload(true);
                         }

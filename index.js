@@ -64,7 +64,7 @@ app.post("/delete", async function(request, response) {
             }
             
             response.send(JSON.stringify({ success: true }));
-            if(connection !== null) { connection.end(function(error) {}); }
+            if(dbconn !== null) { dbconn.end(function(error) {}); }
         });
     }
     else {
