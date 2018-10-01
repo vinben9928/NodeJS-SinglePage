@@ -1,3 +1,6 @@
+const __posts = [];
+var __editingId = null;
+
 window.addEventListener("DOMContentLoaded", documentLoaded);
 
 function documentLoaded() {
@@ -26,6 +29,8 @@ function documentLoaded() {
         for(var i = 0; i < response.posts.length; i++) {
             var post = response.posts[i];
             var timestamp = new Date(post.timestamp);
+            
+            var postObj = { id: post.id, data: post.data, timestamp: post.timestamp };
 
             var postElement = document.createElement("div");
             postElement.className = "post";
@@ -72,6 +77,8 @@ function documentLoaded() {
                 post.meta.tags !== undefined && post.meta.tags !== null && 
                  Array.isArray(post.meta.tags)) {
                 
+                postObj.tags = post.meta.tags;
+                
                 var tagsString = "";
                 for(var t = 0; t < post.meta.tags.length; t++) {
                     tagsString += post.meta.tags[t] + (t < post.meta.tags.length - 1 ? " | " : "");
@@ -84,6 +91,7 @@ function documentLoaded() {
                 postElement.appendChild(tagsElement);
             }
 
+            __posts.push(postObj);
             element.appendChild(postElement);
         }
     });
@@ -120,6 +128,46 @@ function addTag() {
     var tagElement = document.createElement("input");
     tagElement.className = "postTag";
     document.getElementById("tagContainer").appendChild(tagElement);
+}
+
+function editPost(id) {
+    if(id === undefined || id === null || typeof id !== "number") { throw "'id' must be a valid, whole number!"; }
+    
+    var textArea = document.getElementById("postData");
+    var tags = document.getElementsByClassName("postTag");
+
+    if((textArea.value !== null && textArea.value.length > 0) || tags.length > 0) {
+        if(!confirm("You are already editing a post...\nDo you want to discard the changes?")) {
+            return;
+        }
+    }
+
+    var post = getPostById(id);
+    if(post !== null) {
+        alert("ERROR: Post not found!");
+        return;
+    }
+
+    __editingId = id;
+    textArea.value = post.data;
+    
+    if(post.tags !== undefined && post.tags !== null) {
+        for(var i = 0; i < post.tags.length; i++) {
+            //TODO.
+        }
+    }
+}
+
+function getPostById(id) {
+    if(id === undefined || id === null || typeof id !== "number") { throw "'id' must be a valid, whole number!"; }
+
+    for(var i = 0; i < __posts.length; i++) {
+        if(__posts[i].id == id) {
+            return __posts[i];
+        }
+    }
+
+    return null;
 }
 
 function formatDate(date) {
