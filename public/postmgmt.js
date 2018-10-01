@@ -124,10 +124,21 @@ function post() {
     });
 }
 
-function addTag() {
+function addTag(value) {
+    if(value === undefined || value === null || typeof value !== "string") { value = ""; }
+
     var tagElement = document.createElement("input");
     tagElement.className = "postTag";
+    tagElement.setAttribute("value", value);
+
     document.getElementById("tagContainer").appendChild(tagElement);
+}
+
+function clearTags() {
+    var node = document.getElementById("tagContainer");
+    while(node.firstChild) {
+        node.removeChild(node.firstChild);
+    }
 }
 
 function editPost(id) {
@@ -150,10 +161,12 @@ function editPost(id) {
 
     __editingId = id;
     textArea.value = post.data;
+
+    clearTags();
     
     if(post.tags !== undefined && post.tags !== null) {
         for(var i = 0; i < post.tags.length; i++) {
-            //TODO.
+            addTag(post.tags[i]);
         }
     }
 }
