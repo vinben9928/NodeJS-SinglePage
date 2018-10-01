@@ -46,6 +46,11 @@ function documentLoaded() {
             deleteElement.classList.add("noselect");
             deleteElement.innerHTML = "&times;";
 
+            var editElement = document.createElement("a");
+            editElement.className = "editLink";
+            editElement.href = "javascript:void(0);";
+            editElement.innerText = "edit";
+
             const id = post.id;
 
             deleteElement.addEventListener("click", function() {
@@ -69,6 +74,11 @@ function documentLoaded() {
                 });
             });
 
+            editElement.addEventListener("click", function() {
+                editPost(id);
+            });
+
+            postElement.appendChild(editElement);
             postElement.appendChild(deleteElement);
             postElement.appendChild(dateElement);
             postElement.appendChild(textElement);
