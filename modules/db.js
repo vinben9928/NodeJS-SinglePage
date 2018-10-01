@@ -97,7 +97,7 @@ exports.getPostsAsync = async function() {
             for(var i = 0; i < rows.length; i++) {
                 var row = rows[i];
                 try {
-                    data.push({ data: row.Data, meta: JSON.parse(row.Meta !== undefined ? row.Meta : null), timestamp: row.Timestamp });
+                    data.push({ id: row.ID, data: row.Data, meta: JSON.parse(row.Meta !== undefined ? row.Meta : null), timestamp: row.Timestamp });
                 }
                 catch(error) { console.log(error); }
             }

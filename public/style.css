@@ -84,6 +84,15 @@ main
 {
     padding: 1%;
     border-bottom: 1.5px dashed #AAAAAA;
+    position: relative;
+}
+
+.deleteButton
+{
+    content: "&times;";
+    position: absolute;
+    top: 4px;
+    right: 4px;
 }
 
 .postTag

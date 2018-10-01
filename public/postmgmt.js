@@ -36,6 +36,31 @@ function documentLoaded() {
             var textElement = document.createElement("p");
             textElement.innerHTML = post.data;
 
+            var deleteElement = document.createElement("div");
+            deleteElement.className = "deleteButton";
+            
+            deleteElement.addEventListener("click", function() {
+                $.post("/delete", { id: post.id }, function(data) {
+                    try {
+                        var response = JSON.parse(data);
+                        if(response.error !== undefined && response.error !== null) {
+                            alert(response.error);
+                        }
+                        
+                        if(response.success !== undefined && response.success === true) {
+                            window.location.reload(true);
+                        }
+                        else {
+                            throw "<error>";
+                        }
+                    }
+                    catch(error) {
+                        alert("Invalid response received from server!");
+                    }
+                });
+            });
+
+            postElement.appendChild(deleteElement);
             postElement.appendChild(dateElement);
             postElement.appendChild(textElement);
 
