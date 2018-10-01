@@ -55,15 +55,16 @@ app.post("/delete", async function(request, response) {
             response.send(JSON.stringify({ error: "Couldn't connect to database!" }));
             return;
         }
-        
+
         dbconn.query("DELETE FROM posts WHERE ID = ?", id, function(error, result, fields) {
             if(error) {
                 console.log(error);
                 response.send(JSON.stringify({ error: "An unknown error occurred!" }));
                 return;
             }
-
+            
             response.send(JSON.stringify({ success: true }));
+            if(connection !== null) { connection.end(function(error) {}); }
         });
     }
     else {
