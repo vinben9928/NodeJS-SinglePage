@@ -164,7 +164,7 @@ function editPost(id) {
     }
 
     var post = getPostById(id);
-    if(post !== null) {
+    if(post === undefined || post === null) {
         alert("ERROR: Post not found!");
         return;
     }
