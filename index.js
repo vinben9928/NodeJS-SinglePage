@@ -7,7 +7,7 @@ app.use(express.static("public"));
 
 app.post("/create", async function(request, response) {
     if(request.body.post !== undefined && request.body.post !== null) {
-        var result = await db.addPostAsync(request.body.post, request.body.meta);
+        var result = await db.addPostAsync(request.body.post, request.body.meta, request.body.update);
 
         if(result.error !== undefined && result.error !== null) {
             response.send(JSON.stringify({ error: result.error }));

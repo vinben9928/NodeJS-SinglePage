@@ -127,7 +127,7 @@ main
     font-weight: bold;
 }
 
-#addTagButton
+.standardButton
 {
     width: 75px;
     height: 23px;

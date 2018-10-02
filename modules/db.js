@@ -25,7 +25,7 @@ exports.connectAsync = async function() {
     }
 };
 
-exports.addPostAsync = async function(contents, meta) {
+exports.addPostAsync = async function(contents, meta, update) {
     var connection = null;
     try {
         connection = await exports.connectAsync();
@@ -41,10 +41,22 @@ exports.addPostAsync = async function(contents, meta) {
             const joiResult = Joi.validate({contents: contents}, joiSchema);
             if(joiResult.error !== null) { return { error: joiResult.error.details[0].message }; }
             
+            var updateId = null;
+            if(update !== undefined && update !== null) {
+                updateId = parseInt(update);
+                if(isNaN(updateId)) {
+                    return { error: "Bad request!" };
+                }
+            }
+
+            var hasMeta = false;
+            var isUpdate = updateId !== undefined && updateId !== null && typeof updateId === "number";
             var data = [escapeHtml(contents)];
+
             if(meta !== undefined && meta !== null) {
                 try {
                     data.push(JSON.stringify(meta));
+                    hasMeta = true;
                 }
                 catch(error) {
                     connection.end(function(error) {});
@@ -52,10 +64,17 @@ exports.addPostAsync = async function(contents, meta) {
                     return { error: "'meta' must be a valid JSON object!" };
                 }
             }
+            
+            if(isUpdate == true) { data.push(updateId); }
+
+            const query = (isUpdate == true ?
+                `UPDATE posts SET Timestamp = NULL, Data = ?${hasMeta === true ? ", Meta = ?" : ""} WHERE ID = ?` :
+                `INSERT INTO posts(Data${hasMeta == true ? ", Meta" : ""}) VALUES (?${hasMeta == true ? ", ?" : ""})`
+            );
 
             try {
                 await new Promise((resolve, reject) => {
-                    connection.query(`INSERT INTO posts(Data${data.length > 1 ? ", Meta" : ""}) VALUES (?${data.length > 1 ? ", ?" : ""})`, data, function(error, results, fields) {
+                    connection.query(query, data, function(error, results, fields) {
                         if(error) { reject(error); return; }
                         resolve(true);
                     });

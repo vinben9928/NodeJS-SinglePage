@@ -34,9 +34,12 @@
                 </p>
             </div>
             <div class="mainContent visible">
+                <div id="editingNotice" class="hidden">
+                    <h1>Editing post #<span id="postId"></span>...</h1><button class="standardButton" onclick="cancelEdit()">Cancel</button>
+                </div>
                 <textarea id="postData" placeholder="Enter at least 15 characters..."></textarea>
                 <button id="postButton" onclick="post()">Submit</button>
-                <span id="tagContainer"></span><button id="addTagButton" onclick="addTag()">Add tag</button>
+                <span id="tagContainer"></span><button class="standardButton" id="addTagButton" onclick="addTag()">Add tag</button>
                 <div id="posts"></div>
             </div>
             <div class="mainContent">3</div>

@@ -114,7 +114,13 @@ function post() {
         tags.push($(tagElements[i]).val());
     }
 
-    $.post("/create", { post: $("#postData").val(), meta: { tags: tags } }, function(data) {
+    const postData = { post: $("#postData").val(), meta: { tags: tags } };
+
+    if(__editingId !== undefined && __editingId !== null && typeof __editingId === "number") {
+        postData.update = __editingId;
+    }
+
+    $.post("/create", postData, function(data) {
         try {
             var response = JSON.parse(data);
             if(response === null) { throw "<error>"; }
@@ -178,6 +184,23 @@ function editPost(id) {
         for(var i = 0; i < post.tags.length; i++) {
             addTag(post.tags[i]);
         }
+    }
+
+    document.getElementById("editingNotice").className = "";
+    document.getElementById("postId").innerText = __editingId;
+}
+
+function cancelEdit() {
+    if(__editingId === undefined || __editingId === null) {
+        document.getElementById("editingNotice").className = "hidden";
+        return;
+    }
+
+    if(confirm("Do you want to abandon this edit?")) {
+        __editingId = null;
+        document.getElementById("editingNotice").className = "hidden";
+        document.getElementById("postData").value = "";
+        clearTags();
     }
 }
 
