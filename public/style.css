@@ -94,7 +94,7 @@ main
 .post
 {
     padding: 1%;
-    border-bottom: 1.5px dashed #AAAAAA;
+    border-top: 1.5px dashed #AAAAAA;
     position: relative;
 }
 
