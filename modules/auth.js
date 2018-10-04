@@ -10,9 +10,27 @@ exports.validateInput = function(email, password) {
     const schema = Joi.object().keys({
         email: Joi.string().email({ minDomainAtoms: 2 }),
         password: Joi.string().min(3) //.regex(/^.{3,}$/)
-    }).with('email', 'password');
+    }).with("email", "password");
     
     const result = Joi.validate({ email: email, password: password }, schema);
+
+    if(result.error === null) {
+        return true;
+    }
+    else {
+        return result.error.details[0].message;
+    }
+};
+
+exports.validateRegisterInput = function(email, password, firstName, lastName) {
+    const schema = Joi.object().keys({
+        email: Joi.string().email({ minDomainAtoms: 2 }),
+        password: Joi.string().min(3),
+        firstName: Joi.string().min(2),
+        lastName: Joi.string().min(2)
+    }).with("email", "password", "firstName", "lastName");
+    
+    const result = Joi.validate({ email: email, password: password, firstName: firstName, lastName: lastName }, schema);
 
     if(result.error === null) {
         return true;
@@ -30,9 +48,7 @@ exports.loginAsync = function(request, email, password) {
         if(isNull(email)) { reject("'email' cannot be null!"); return; }
         if(isNull(password)) { reject("'password' cannot be null!"); return; }
 
-        var user = { email: email, password: password }
-        var validationResult = exports.validateInput(user);
-
+        var validationResult = exports.validateInput(email, password);
         if(validationResult === true) {
 
             var dbconn = null;
@@ -66,71 +82,52 @@ exports.loginAsync = function(request, email, password) {
 
             if(isNull(existingUser)) { return; }
 
-            const loggedIn = await new Promise((resolveBcrypt, rejectBcrypt) =>
+            const loginSuccess = await new Promise((resolveBcrypt, rejectBcrypt) =>
             {
-                bcrypt.compare(user.password, existingUser.password, function(error, result) {
+                bcrypt.compare(password, existingUser.password, function(error, result) {
                     if(error) {
                         rejectBcrypt("loginAsync() bcrypt error: " + error.toString());
                         reject("An error occurred!");
                         return;
                     }
                     else if(result === true) {
-                        console.log("User logged in! (" + user.email + ")");
-                        //TODO: Set session variable...
+                        if(isNull(request.session)) {
+                            rejectBcrypt("FATAL ERROR: Session doesn't exist!");
+                            reject("An unknown error occurred!");
+                            return;
+                        }
+
+                        request.session.loggedInAs = email;
+                        console.log("User logged in! (" + email + ")");
                         resolveBcrypt(true);
                     }
                     else {
-                        rejectBcrypt("Invalid password for user '" + existingUser.email + "'");
+                        rejectBcrypt("Invalid password for user '" + existingUser.email + "'!");
                         reject("Invalid e-mail or password!");
                     }
                 });
             }).catch(function(error) { console.log(error.toString()); });
 
-            if(loggedIn === undefined || loggedIn === null) { return; }
+            if(isNull(loginSuccess)) { resolve(false); return; }
 
-            resolve(loggedIn);
+            resolve(loginSuccess);
         }
         else {
-            reject(isNull(validationResult) ? "An unknown error occurred!" : validationResult.toString());
+            reject(isNull(validationResult) ? "An unknown error occurred!" : "Invalid e-mail or password!");
         }
     });
 };
 
-exports.verifyTokenAsync = function(token) {
-    return new Promise(async (resolve, reject) => {
-        if(typeof token !== "string") { reject("Token must be a string!"); return; }
-
-        const data = await new Promise((resolveJwt, rejectJwt) => {
-            jwt.verify(token, tk.node_auth_jwt_token, function(error, data) {
-                if(error) {
-                    rejectJwt("verifyTokenAsync() verifying error: " + error.toString());
-                    reject("An error occurred!");
-                    return;
-                }
-
-                resolveJwt(data);
-            });
-        }).catch(function(error) { console.log(error.toString()); });
-        
-        if(data === undefined || data === null) { return; }
-
-        resolve(data);
-    });
-}
-
 //User creation.
-exports.createUserAsync = function(email, password) {
+exports.createUserAsync = function(email, password, firstName, lastName) {
     return new Promise(async (resolve, reject) =>
     {
-        if(email === null) { reject("'email' cannot be null!"); return; }
-        if(password === null) { reject("'password' cannot be null!"); return; }
+        if(isNull(email)) { reject("'email' cannot be null!"); return; }
+        if(isNull(password)) { reject("'password' cannot be null!"); return; }
+        if(isNull(firstName)) { reject("'firstName' cannot be null!"); return; }
+        if(isNull(lastName)) { reject("'lastName' cannot be null!"); return; }
 
-        var user = { email: email, password: password }
-        var validationResult = exports.validateInput(user);
-
-        user.password = null;
-        user.id = new Date().getTime();
-
+        var validationResult = exports.validateRegisterInput(email, password, firstName, lastName);
         if(validationResult === true)
         {
             const salt = await new Promise((resolveSalt, rejectSalt) => {
@@ -157,22 +154,29 @@ exports.createUserAsync = function(email, password) {
                 });
             }).catch(function(error) { console.log(error.toString()); });
 
-            if(hash === undefined || hash === null) { return; }
+            if(isNull(hash)) { resolve(false); return; }
 
-            user.password = hash;
-            await saveUserAsync(user)
-                .then(function(result) {
-                    if(result === true) {
-                        console.log("User added successfully! (" + user.email + ")");
-                    }
-                })
-                .catch(function(error) {
-                    console.log(error.toString());
-                    reject("An error occurred!");
+            var dbconn = null;
+            try {
+                dbconn = await db.connectAsync();
+            }
+            catch(error) {
+                console.log(error);
+                reject("Couldn't connect to database!");
+                return;
+            }
+
+            if(isNull(dbconn)) { resolve(false); return; }
+
+            dbconn.query("INSERT INTO Users(Email, Password, FirstName, LastName) VALUES (?, ?, ?, ?)", [email, password, firstName, lastName], function(error, result, fields) {
+                if(error) {
+                    console.log(error);
+                    reject("An unknown error occurred!");
                     return;
-                });
+                }
 
-            resolve(true);
+                resolve(true);
+            });
         }
         else {
             reject(validationResult === null ? "An unknown error occurred!" : validationResult.toString());
