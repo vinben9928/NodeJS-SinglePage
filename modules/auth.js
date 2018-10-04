@@ -23,11 +23,12 @@ exports.validateInput = function(email, password) {
 };
 
 //Authorization.
-exports.loginAsync = function(email, password) {
+exports.loginAsync = function(request, email, password) {
     return new Promise(async (resolve, reject) =>
     {
-        if(email === null) { reject("'email' cannot be null!"); return; }
-        if(password === null) { reject("'password' cannot be null!"); return; }
+        if(isNull(request)) { reject("'request' cannot be null!"); return; }
+        if(isNull(email)) { reject("'email' cannot be null!"); return; }
+        if(isNull(password)) { reject("'password' cannot be null!"); return; }
 
         var user = { email: email, password: password }
         var validationResult = exports.validateInput(user);
@@ -53,7 +54,7 @@ exports.loginAsync = function(email, password) {
                         return;
                     }
 
-                    if(isNull(result.rows) || result.rows <= 0) {
+                    if(isNull(result.rows) || result.rows.length <= 0) {
                         rejectUs("User doesn't exist: " + email);
                         reject("Invalid e-mail or password!");
                         return;
@@ -65,7 +66,7 @@ exports.loginAsync = function(email, password) {
 
             if(isNull(existingUser)) { return; }
 
-            const token = await new Promise((resolveBcrypt, rejectBcrypt) =>
+            const loggedIn = await new Promise((resolveBcrypt, rejectBcrypt) =>
             {
                 bcrypt.compare(user.password, existingUser.password, function(error, result) {
                     if(error) {
@@ -75,9 +76,8 @@ exports.loginAsync = function(email, password) {
                     }
                     else if(result === true) {
                         console.log("User logged in! (" + user.email + ")");
-
-                        //TODO...
-                        //resolveBcrypt({ access_token: token });
+                        //TODO: Set session variable...
+                        resolveBcrypt(true);
                     }
                     else {
                         rejectBcrypt("Invalid password for user '" + existingUser.email + "'");
@@ -86,12 +86,12 @@ exports.loginAsync = function(email, password) {
                 });
             }).catch(function(error) { console.log(error.toString()); });
 
-            if(token === undefined || token === null) { return; }
+            if(loggedIn === undefined || loggedIn === null) { return; }
 
-            resolve(token);
+            resolve(loggedIn);
         }
         else {
-            reject(validationResult === null ? "An unknown error occurred!" : validationResult.toString());
+            reject(isNull(validationResult) ? "An unknown error occurred!" : validationResult.toString());
         }
     });
 };

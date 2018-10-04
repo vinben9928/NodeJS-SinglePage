@@ -1,9 +1,31 @@
 const express = require("express");
 const db = require("./modules/db");
+const dba = require("./modules/dba");
+const session = require("express-session");
+const FileStore = require('session-file-store')(session);
+const uuid = require("uuid/v4");
+
 const app = express();
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.static("public"));
+
+app.use(session({
+    genid: (request) => {
+        return uuid();
+    },
+    secret: dba.sess,
+    store: new FileStore(),
+    resave: false,
+    saveUninitialized: false,
+    unset: "keep",
+    cookie: {
+        httpOnly: true,
+        secure: false,
+        sameSite: true,
+        maxAge: 15 * 60 * 1000 //15 minutes.
+    }
+}));
 
 app.post("/create", async function(request, response) {
     if(request.body.post !== undefined && request.body.post !== null) {
