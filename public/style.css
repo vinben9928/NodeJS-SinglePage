@@ -133,6 +133,26 @@ main
     height: 23px;
 }
 
+.loginWindow
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: #FFFFFF;
+}
+
+#loginDiv
+{
+    display: block;
+}
+
+#registerDiv
+{
+    display: none;
+}
+
 footer
 {
     min-height: 20vh;

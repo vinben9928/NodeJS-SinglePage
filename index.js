@@ -1,9 +1,11 @@
 const express = require("express");
 const db = require("./modules/db");
 const dba = require("./modules/dba");
+const auth = require("./modules/auth");
 const session = require("express-session");
 const FileStore = require('session-file-store')(session);
 const uuid = require("uuid/v4");
+const isNull = require("./modules/isNull");
 
 const app = express();
 
@@ -26,6 +28,34 @@ app.use(session({
         maxAge: 15 * 60 * 1000 //15 minutes.
     }
 }));
+
+app.post("/login", async function(request, response) {
+    var result = await auth.loginAsync(request, request.body.email, request.body.password);
+
+    if(!isNull(result.error)) {
+        response.send(JSON.stringify({ error: result.error }));
+    }
+    else if(result.success === true) {
+        response.send(JSON.stringify({ success: true }));
+    }
+    else {
+        response.send(JSON.stringify({ error: "An unknown error occurred!" }));
+    }
+});
+
+app.post("/register", async function(request, response) {
+    var result = await auth.createUserAsync(request.body.email, request.body.password, request.body.firstName, request.body.lastName);
+
+    if(!isNull(result.error)) {
+        response.send(JSON.stringify({ error: result.error }));
+    }
+    else if(result.success === true) {
+        response.send(JSON.stringify({ success: true }));
+    }
+    else {
+        response.send(JSON.stringify({ error: "An unknown error occurred!" }));
+    }
+});
 
 app.post("/create", async function(request, response) {
     if(request.body.post !== undefined && request.body.post !== null) {

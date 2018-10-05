@@ -45,6 +45,53 @@
             <div class="mainContent">3</div>
             <div class="mainContent">4</div>
         </main>
+
+        <div class="loginWindow">
+            <div id="loginDiv">
+                <a href="javascript:void(0)" onclick="$('loginDiv').show(); $('registerDiv').hide();">Register</a>
+                <table style="border: 0">
+                    <tbody>
+                        <tr>
+                            <td>E-mail:</td>
+                            <td><input id="loginEmail" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td>Password:</td>
+                            <td><input id="loginEmail" type="password"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="text-align: center">
+                    <button onclick="login()">Log in</button>
+                </div>
+            </div>
+            <div id="registerDiv">
+                <a href="javascript:void(0)" onclick="$('loginDiv').hide(); $('registerDiv').show();">Log in</a>
+                <table style="border: 0">
+                    <tbody>
+                        <tr>
+                            <td>First name:</td>
+                            <td><input id="firstName" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td>Last name:</td>
+                            <td><input id="lastName" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td>E-mail:</td>
+                            <td><input id="registerEmail" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td>Password:</td>
+                            <td><input id="registerPassword" type="password"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="text-align: center">
+                    <button onclick="register()">Register</button>
+                </div>
+            </div>
+        </div>
         <footer>
             <h3>Copyright &copy; Someone 2018</h3>
         </footer>

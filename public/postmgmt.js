@@ -204,6 +204,64 @@ function cancelEdit() {
     }
 }
 
+function login() {
+    $.post("/login", {
+        email: document.getElementById("loginEmail").value,
+        password: document.getElementById("loginPassword").value
+    },
+    function(data) {
+        var response = null;
+
+        try {
+            response = JSON.parse(data);
+            if(response === null) { throw "<error>"; }
+        }
+        catch(error) {
+            alert("Invalid response received from server!");
+            return;
+        }
+
+        if(response.error !== undefined && response.error !== null) {
+            alert(response.error.toString());
+            return;
+        }
+
+        if(response.success !== undefined && response.success === true) {
+            window.location.reload(true);
+        }
+    });
+}
+
+function register() {
+    $.post("/register", {
+        email: document.getElementById("registerEmail").value,
+        password: document.getElementById("registerPassword").value,
+        firstName: document.getElementById("firstName"),
+        lastName: document.getElementById("lastName")
+    },
+    function(data) {
+        var response = null;
+
+        try {
+            response = JSON.parse(data);
+            if(response === null) { throw "<error>"; }
+        }
+        catch(error) {
+            alert("Invalid response received from server!");
+            return;
+        }
+
+        if(response.error !== undefined && response.error !== null) {
+            alert(response.error.toString());
+            return;
+        }
+
+        if(response.success !== undefined && response.success === true) {
+            window.location.reload(true);
+        }
+    });
+}
+
 function getPostById(id) {
     if(id === undefined || id === null || typeof id !== "number") { throw "'id' must be a valid, whole number!"; }
 
