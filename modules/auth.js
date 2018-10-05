@@ -106,6 +106,10 @@ exports.loginAsync = function(request, email, password) {
 
                         request.session.loggedInAs = email;
                         request.session.save(function(error) { if(error) { console.log(error); } });
+
+                        //TODO: Add fingerprint to session!
+                        //TODO: Create isLoggedIn() function!
+
                         console.log("User logged in! (" + email + ")");
                         resolveBcrypt(true);
                     }
