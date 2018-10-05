@@ -105,6 +105,7 @@ exports.loginAsync = function(request, email, password) {
                         }
 
                         request.session.loggedInAs = email;
+                        request.session.save(function(error) { if(error) { console.log(error); } });
                         console.log("User logged in! (" + email + ")");
                         resolveBcrypt(true);
                     }

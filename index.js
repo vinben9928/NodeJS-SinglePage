@@ -49,7 +49,7 @@ app.post("/login", async function(request, response) {
 app.post("/register", async function(request, response) {
     try {
         var result = await auth.createUserAsync(request.body.email, request.body.password, request.body.firstName, request.body.lastName);
-        
+
         if(!isNull(result) && result === true) {
             response.send(JSON.stringify({ success: true }));
         }
@@ -61,6 +61,25 @@ app.post("/register", async function(request, response) {
         console.log(error);
         response.send(JSON.stringify({ error: error }));
     }
+});
+
+app.get("/amILoggedIn", function(request, response) {
+    if(!isNull(request.session) && !isNull(request.session.loggedInAs)) {
+        response.send("Yes");
+    }
+    else {
+        response.send("No");
+    }
+});
+
+app.get("/logout", async function(request, response) {
+    try {
+        await auth.logoutAsync(request);
+    }
+    catch(error) {
+        console.log(error);
+    }
+    response.redirect("/");
 });
 
 app.post("/create", async function(request, response) {
