@@ -56,7 +56,7 @@ exports.loginAsync = function(request, email, password) {
                 dbconn = await db.connectAsync();
             }
             catch(error) {
-                if(dbconn !== null) { connection.end(function(error) {}); }
+                if(dbconn !== null) { dbconn.end(function(error) {}); }
                 console.log(error);
                 reject("Couldn't connect to database!");
                 return;
@@ -79,12 +79,12 @@ exports.loginAsync = function(request, email, password) {
                         return;
                     }
 
-                    resolveUs({ email: result[0].Email, password: result[1].Password });
+                    resolveUs({ email: result[0].Email, password: result[0].Password });
                 });
             }).catch(function(error) { console.log(error.toString()); });
 
             if(isNull(existingUser)) {
-                if(dbconn !== null) { connection.end(function(error) {}); }
+                if(dbconn !== null) { dbconn.end(function(error) {}); }
                 resolve(false);
                 return;
             }
@@ -116,12 +116,12 @@ exports.loginAsync = function(request, email, password) {
             }).catch(function(error) { console.log(error.toString()); });
 
             if(isNull(loginSuccess)) {
-                if(dbconn !== null) { connection.end(function(error) {}); }
+                if(dbconn !== null) { dbconn.end(function(error) {}); }
                 resolve(false);
                 return;
             }
-            
-            if(dbconn !== null) { connection.end(function(error) {}); }
+
+            if(dbconn !== null) { dbconn.end(function(error) {}); }
             resolve(loginSuccess);
         }
         else {
@@ -173,7 +173,7 @@ exports.createUserAsync = function(email, password, firstName, lastName) {
                 dbconn = await db.connectAsync();
             }
             catch(error) {
-                if(dbconn !== null) { connection.end(function(error) {}); }
+                if(dbconn !== null) { dbconn.end(function(error) {}); }
                 console.log(error);
                 reject("Couldn't connect to database!");
                 return;
@@ -183,13 +183,13 @@ exports.createUserAsync = function(email, password, firstName, lastName) {
 
             dbconn.query("INSERT INTO Users(Email, Password, FirstName, LastName) VALUES (?, ?, ?, ?)", [email, hash, firstName, lastName], function(error, result, fields) {
                 if(error) {
-                    if(dbconn !== null) { connection.end(function(error) {}); }
+                    if(dbconn !== null) { dbconn.end(function(error) {}); }
                     console.log(error);
                     reject("An unknown error occurred!");
                     return;
                 }
 
-                if(dbconn !== null) { connection.end(function(error) {}); }
+                if(dbconn !== null) { dbconn.end(function(error) {}); }
                 resolve(true);
             });
         }
