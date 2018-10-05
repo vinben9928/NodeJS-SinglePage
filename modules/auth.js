@@ -2,7 +2,6 @@ const fs = require("fs");
 const Joi = require("joi");
 const bcrypt = require("bcryptjs");
 const db = require("./db");
-const tk = require("./tk");
 const isNull = require("./isNull");
 
 //Input validation.
