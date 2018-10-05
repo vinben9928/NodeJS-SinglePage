@@ -30,30 +30,36 @@ app.use(session({
 }));
 
 app.post("/login", async function(request, response) {
-    var result = await auth.loginAsync(request, request.body.email, request.body.password);
+    try {
+        var result = await auth.loginAsync(request, request.body.email, request.body.password);
 
-    if(!isNull(result.error)) {
-        response.send(JSON.stringify({ error: result.error }));
+        if(!isNull(result) && result === true) {
+            response.send(JSON.stringify({ success: true }));
+        }
+        else {
+            response.send(JSON.stringify({ error: "Invalid e-mail or password!" }));
+        }
     }
-    else if(result.success === true) {
-        response.send(JSON.stringify({ success: true }));
-    }
-    else {
-        response.send(JSON.stringify({ error: "An unknown error occurred!" }));
+    catch(error) {
+        console.log(error);
+        response.send(JSON.stringify({ error: error }));
     }
 });
 
 app.post("/register", async function(request, response) {
-    var result = await auth.createUserAsync(request.body.email, request.body.password, request.body.firstName, request.body.lastName);
-
-    if(!isNull(result.error)) {
-        response.send(JSON.stringify({ error: result.error }));
+    try {
+        var result = await auth.createUserAsync(request.body.email, request.body.password, request.body.firstName, request.body.lastName);
+        
+        if(!isNull(result) && result === true) {
+            response.send(JSON.stringify({ success: true }));
+        }
+        else {
+            response.send(JSON.stringify({ error: "An unknown error occurred!" }));
+        }
     }
-    else if(result.success === true) {
-        response.send(JSON.stringify({ success: true }));
-    }
-    else {
-        response.send(JSON.stringify({ error: "An unknown error occurred!" }));
+    catch(error) {
+        console.log(error);
+        response.send(JSON.stringify({ error: error }));
     }
 });
 

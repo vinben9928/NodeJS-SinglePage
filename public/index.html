@@ -47,8 +47,9 @@
         </main>
 
         <div class="loginWindow">
+            <div onclick="$('.loginWindow').hide();">&times;</div>
             <div id="loginDiv">
-                <a href="javascript:void(0)" onclick="$('loginDiv').show(); $('registerDiv').hide();">Register</a>
+                <a href="javascript:void(0)" onclick="$('#loginDiv').hide(); $('#registerDiv').show();">Register</a>
                 <table style="border: 0">
                     <tbody>
                         <tr>
@@ -57,7 +58,7 @@
                         </tr>
                         <tr>
                             <td>Password:</td>
-                            <td><input id="loginEmail" type="password"/></td>
+                            <td><input id="loginPassword" type="password"/></td>
                         </tr>
                     </tbody>
                 </table>
@@ -66,7 +67,7 @@
                 </div>
             </div>
             <div id="registerDiv">
-                <a href="javascript:void(0)" onclick="$('loginDiv').hide(); $('registerDiv').show();">Log in</a>
+                <a href="javascript:void(0)" onclick="$('#loginDiv').show(); $('#registerDiv').hide();">Log in</a>
                 <table style="border: 0">
                     <tbody>
                         <tr>

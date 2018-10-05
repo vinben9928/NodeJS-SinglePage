@@ -236,8 +236,8 @@ function register() {
     $.post("/register", {
         email: document.getElementById("registerEmail").value,
         password: document.getElementById("registerPassword").value,
-        firstName: document.getElementById("firstName"),
-        lastName: document.getElementById("lastName")
+        firstName: document.getElementById("firstName").value,
+        lastName: document.getElementById("lastName").value
     },
     function(data) {
         var response = null;

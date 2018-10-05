@@ -27,7 +27,7 @@ exports.validateRegisterInput = function(email, password, firstName, lastName) {
         password: Joi.string().min(3),
         firstName: Joi.string().min(2),
         lastName: Joi.string().min(2)
-    }).with("email", "password", "firstName", "lastName");
+    }).with("email", ["password", "firstName", "lastName"]);
     
     const result = Joi.validate({ email: email, password: password, firstName: firstName, lastName: lastName }, schema);
 
@@ -56,31 +56,38 @@ exports.loginAsync = function(request, email, password) {
                 dbconn = await db.connectAsync();
             }
             catch(error) {
+                if(dbconn !== null) { connection.end(function(error) {}); }
                 console.log(error);
                 reject("Couldn't connect to database!");
                 return;
             }
 
+            if(isNull(dbconn)) { reject("Couldn't connect to database!"); return; }
+
             const existingUser = await new Promise((resolveUs, rejectUs) =>
             {
-                dbconn.query("SELECT * FROM Users WHERE Email = ? LIMIT = 1", [email], function(error, result, fields) {
+                dbconn.query("SELECT * FROM Users WHERE Email = ? LIMIT 1", [email], function(error, result, fields) {
                     if(error) {
                         rejectUs("loginAsync() existing user error: " + error.toString());
                         reject("An unknown error occurred!");
                         return;
                     }
 
-                    if(isNull(result.rows) || result.rows.length <= 0) {
+                    if(isNull(result) || !Array.isArray(result) || result.length <= 0) {
                         rejectUs("User doesn't exist: " + email);
                         reject("Invalid e-mail or password!");
                         return;
                     }
 
-                    resolveUs({ email: rows[0].Email, password: rows[1].Password });
+                    resolveUs({ email: result[0].Email, password: result[1].Password });
                 });
             }).catch(function(error) { console.log(error.toString()); });
 
-            if(isNull(existingUser)) { return; }
+            if(isNull(existingUser)) {
+                if(dbconn !== null) { connection.end(function(error) {}); }
+                resolve(false);
+                return;
+            }
 
             const loginSuccess = await new Promise((resolveBcrypt, rejectBcrypt) =>
             {
@@ -108,8 +115,13 @@ exports.loginAsync = function(request, email, password) {
                 });
             }).catch(function(error) { console.log(error.toString()); });
 
-            if(isNull(loginSuccess)) { resolve(false); return; }
-
+            if(isNull(loginSuccess)) {
+                if(dbconn !== null) { connection.end(function(error) {}); }
+                resolve(false);
+                return;
+            }
+            
+            if(dbconn !== null) { connection.end(function(error) {}); }
             resolve(loginSuccess);
         }
         else {
@@ -141,7 +153,7 @@ exports.createUserAsync = function(email, password, firstName, lastName) {
                 });
             }).catch(function(error) { console.log(error.toString()); });
 
-            if(salt === undefined || salt === null) { return; }
+            if(isNull(salt)) { resolve(false); return; }
             
             const hash = await new Promise((resolveHash, rejectHash) => {
                 bcrypt.hash(password, salt, function(error, resultHash) {
@@ -161,20 +173,23 @@ exports.createUserAsync = function(email, password, firstName, lastName) {
                 dbconn = await db.connectAsync();
             }
             catch(error) {
+                if(dbconn !== null) { connection.end(function(error) {}); }
                 console.log(error);
                 reject("Couldn't connect to database!");
                 return;
             }
 
-            if(isNull(dbconn)) { resolve(false); return; }
+            if(isNull(dbconn)) { reject("Couldn't connect to database!"); return; }
 
-            dbconn.query("INSERT INTO Users(Email, Password, FirstName, LastName) VALUES (?, ?, ?, ?)", [email, password, firstName, lastName], function(error, result, fields) {
+            dbconn.query("INSERT INTO Users(Email, Password, FirstName, LastName) VALUES (?, ?, ?, ?)", [email, hash, firstName, lastName], function(error, result, fields) {
                 if(error) {
+                    if(dbconn !== null) { connection.end(function(error) {}); }
                     console.log(error);
                     reject("An unknown error occurred!");
                     return;
                 }
 
+                if(dbconn !== null) { connection.end(function(error) {}); }
                 resolve(true);
             });
         }
