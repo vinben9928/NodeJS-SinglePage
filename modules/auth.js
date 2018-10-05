@@ -45,6 +45,7 @@ exports.loginAsync = function(request, email, password) {
     return new Promise(async (resolve, reject) =>
     {
         if(isNull(request)) { reject("'request' cannot be null!"); return; }
+        if(isNull(request.session)) { reject("Session not initialized!"); return; }
         if(isNull(email)) { reject("'email' cannot be null!"); return; }
         if(isNull(password)) { reject("'password' cannot be null!"); return; }
 
@@ -183,3 +184,16 @@ exports.createUserAsync = function(email, password, firstName, lastName) {
         }
     });
 };
+
+//Logout.
+exports.logoutAsync = function(request) {
+    return new Promise((resolve, reject) => {
+        if(isNull(request)) { reject("'request' cannot be null!"); return; }
+        if(isNull(request.session)) { reject("Session not initialized!"); return; }
+
+        request.session.destroy(function(error) {
+            if(error) { console.log(error); }
+            resolve(true);
+        });
+    });
+}
